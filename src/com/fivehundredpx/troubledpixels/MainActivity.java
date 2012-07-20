@@ -26,15 +26,11 @@ public class MainActivity extends RoboActivity implements
 		XAuth500pxTask.Delegate, UserDetailTask.Delegate {
 	private static final String TAG = "MainActivity";
 
-	@InjectView(R.id.login_password)
-	EditText passText;
-	@InjectView(R.id.login_email)
-	EditText loginText;
-	@InjectView(R.id.login_btn)
-	Button loginBtn;
+	@InjectView(R.id.login_password) EditText passText;
+	@InjectView(R.id.login_email) EditText loginText;
+	@InjectView(R.id.login_btn) Button loginBtn;
 
-	@Inject
-	User user;
+	@Inject User user;
 
 	private XAuth500pxTask loginTask;
 
@@ -48,18 +44,13 @@ public class MainActivity extends RoboActivity implements
 
 			@Override
 			public void onClick(View v) {
-				// loginTask.execute(loginText.getText().toString(),passText.getText().toString());
+//				 loginTask.execute(loginText.getText().toString(),passText.getText().toString());
 				// TODO
 				loginTask.execute("arthurnn", "password=a");
 			}
 		});
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
-	}
+	
 
 	@Override
 	public void success(AccessToken result) {

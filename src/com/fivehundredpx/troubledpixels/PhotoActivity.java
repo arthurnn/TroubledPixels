@@ -250,13 +250,14 @@ public class PhotoActivity extends RoboActivity implements
 			}
 		}
 	}
-
+	String photoId;
 	@Override
 	public void success(JSONObject json) {
 
 		try {
-			new ImageUploadTask().execute(json.getJSONObject("photo")
-					.getString("id"), json.getString("upload_key"));
+			photoId = json.getJSONObject("photo")
+			.getString("id");
+			new ImageUploadTask().execute(photoId, json.getString("upload_key"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -271,6 +272,7 @@ public class PhotoActivity extends RoboActivity implements
 
 	public void onFinishTask() {
 		Intent i = new Intent(PhotoActivity.this, ConfirmationActivity.class);
+		i.putExtra("photoId", photoId);
 		startActivity(i);
 		finish();
 	}

@@ -1,41 +1,72 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/tp_background" >
 
-    <EditText
-        android:id="@+id/login_email"
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingBottom="40dp" >
+
+        <EditText
+            android:id="@+id/login_email"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:drawableLeft="@drawable/ic_social_person"
+            android:ems="10"
+            android:hint="username"
+            android:inputType="textEmailAddress"
+            android:textColor="@android:color/white" >
+
+            <requestFocus />
+        </EditText>
+
+        <EditText
+            android:id="@+id/login_password"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/login_email"
+            android:layout_below="@+id/login_email"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:drawableLeft="@drawable/ic_device_access_accounts"
+            android:ems="10"
+            android:hint="password"
+            android:inputType="textPassword"
+            android:textColor="@android:color/white" >
+        </EditText>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/login_password"
+            android:layout_below="@+id/login_password"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp" >
+
+            <Button
+                android:id="@+id/login_btn"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Login"
+                android:textColor="@android:color/white" />
+        </FrameLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_above="@+id/relativeLayout1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="92dp"
-        android:ems="10"
-        android:hint="email"
-        android:inputType="textEmailAddress" />
-
-    <EditText
-        android:id="@+id/login_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/login_email"
-        android:layout_below="@+id/login_email"
-        android:layout_marginTop="42dp"
-        android:ems="10"
-        android:hint="password"
-        android:inputType="textPassword" >
-
-        <requestFocus />
-    </EditText>
-
-    <Button
-        android:id="@+id/login_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/login_password"
-        android:layout_alignRight="@+id/login_password"
-        android:layout_below="@+id/login_password"
-        android:layout_marginTop="58dp"
-        android:text="Login" />
+        android:layout_marginBottom="23dp"
+        android:src="@drawable/ic_500px_logo" />
 
 </RelativeLayout>

@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -33,7 +34,7 @@ public class ProfileActivity extends RoboActivity implements
 	private static final int TAKE_PICTURE = 2 << 2;
 
 	@InjectView(R.id.profile_image) ImageView profileImage;
-	@InjectView(R.id.camera_btn) Button cameraBtn;
+	@InjectView(R.id.camera_btn) ImageButton cameraBtn;
 
 	@Inject User user;
 
@@ -54,12 +55,6 @@ public class ProfileActivity extends RoboActivity implements
 
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_profile, menu);
-		return true;
-	}
-	
 
 	private Uri imageUri;
 
