@@ -9,7 +9,6 @@ import roboguice.inject.InjectView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -20,6 +19,7 @@ import com.fivehundredpx.troubledpixels.controller.User;
 import com.fivehundredpx.troubledpixels.tasks.UserDetailTask;
 import com.fivehundredpx.troubledpixels.tasks.XAuth500pxTask;
 import com.google.inject.Inject;
+import com.zubhium.ZubhiumSDK;
 
 @ContentView(R.layout.activity_main)
 public class MainActivity extends RoboActivity implements
@@ -38,6 +38,9 @@ public class MainActivity extends RoboActivity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		ZubhiumSDK.getZubhiumSDKInstance(getApplicationContext(), "e9454fd68a4a5575a3c11212e77fba");
+	   
+		
 		loginTask = new XAuth500pxTask(this);
 
 		loginBtn.setOnClickListener(new OnClickListener() {
