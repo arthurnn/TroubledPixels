@@ -13,8 +13,15 @@ import com.fivehundredpx.troubledpixels.R;
 
 public class XAuth500pxTask extends AsyncTask<String, Void, AccessToken> {
 	private static final String TAG = "XAuth500pxTask";
+	
+	public interface Delegate {
+		public void success(AccessToken result);
+		public void fail();
+	}
 
-	public XAuth500pxTask() {
+	private Delegate _d;
+	public XAuth500pxTask(Delegate delegate) {
+		this._d = delegate;
 	}
 
 	@Override
@@ -52,7 +59,10 @@ public class XAuth500pxTask extends AsyncTask<String, Void, AccessToken> {
 	protected void onPostExecute(AccessToken result) {
 
 		if (null != result)
-			Log.w(TAG, "onPostExecute :" + result.getToken());
+			_d.success(result);
+		else
+			_d.fail();
+			
 
 	}
 }
