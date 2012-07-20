@@ -19,7 +19,6 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -34,22 +33,12 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_photo"
             android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:name=".ConfirmationActivity"
             android:label="@string/title_activity_confirmation" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

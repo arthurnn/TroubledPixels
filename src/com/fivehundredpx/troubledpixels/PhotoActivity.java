@@ -2,6 +2,9 @@ package com.fivehundredpx.troubledpixels;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.http.HttpResponse;
@@ -20,10 +23,10 @@ import org.json.JSONObject;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,34 +49,33 @@ public class PhotoActivity extends RoboActivity implements
 
 	private static final String TAG = "PhotoActivity";
 
+	private static final int THUMBNAIL_SIZE = 200;
+
 	@InjectView(R.id.pic)
 	ImageView pictureImageView;
 
 	@InjectView(R.id.submit_btn)
 	Button submitButton;
-	
-	@InjectView(R.id.editText1) EditText titleEdit;
-	@InjectView(R.id.editText2) EditText descEdit;
-	
-	
+
+	@InjectView(R.id.editText1)
+	EditText titleEdit;
+	@InjectView(R.id.editText2)
+	EditText descEdit;
+
 	@Inject
 	User user;
 
 	private Uri selectedImage;
-	
-	private Bitmap bitmap;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		selectedImage = getIntent().getData();
-		ContentResolver cr = getContentResolver();
 
 		try {
-			bitmap = android.provider.MediaStore.Images.Media.getBitmap(
-					cr, selectedImage);
 
+			Bitmap bitmap = getThumbnail(selectedImage);
 			pictureImageView.setImageBitmap(bitmap);
 
 		} catch (Exception e) {
@@ -86,21 +88,59 @@ public class PhotoActivity extends RoboActivity implements
 		submitButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new CreatePhotoTask(PhotoActivity.this)
-						.execute(user.accessToken, titleEdit.getText().toString(), descEdit.getText().toString() );
+				new CreatePhotoTask(PhotoActivity.this).execute(
+						user.accessToken, titleEdit.getText().toString(),
+						descEdit.getText().toString());
 
 			}
 		});
 
 	}
-	
+
+	public Bitmap getThumbnail(Uri uri) throws FileNotFoundException,
+			IOException {
+		InputStream input = getContentResolver().openInputStream(uri);
+
+		BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
+		onlyBoundsOptions.inJustDecodeBounds = true;
+		onlyBoundsOptions.inDither = true;// optional
+		onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;// optional
+		BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
+		input.close();
+		if ((onlyBoundsOptions.outWidth == -1)
+				|| (onlyBoundsOptions.outHeight == -1))
+			return null;
+
+		int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight
+				: onlyBoundsOptions.outWidth;
+
+		double ratio = (originalSize > THUMBNAIL_SIZE) ? (originalSize / THUMBNAIL_SIZE)
+				: 1.0;
+
+		BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+		bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
+		bitmapOptions.inDither = true;// optional
+		bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;// optional
+		input = this.getContentResolver().openInputStream(uri);
+		Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
+		input.close();
+		return bitmap;
+	}
+
+	private static int getPowerOfTwoForSampleRatio(double ratio) {
+		int k = Integer.highestOneBit((int) Math.floor(ratio));
+		if (k == 0)
+			return 1;
+		else
+			return k;
+	}
+
 	@Override
 	protected void onDestroy() {
-		
 
 		pictureImageView.setImageDrawable(null);
-//		bitmap.recycle();
-		
+		// bitmap.recycle();
+
 		super.onDestroy();
 	}
 
@@ -119,28 +159,35 @@ public class PhotoActivity extends RoboActivity implements
 			try {
 				HttpClient httpClient = new DefaultHttpClient();
 				HttpContext localContext = new BasicHttpContext();
-				HttpPost httpPost = new HttpPost("https://api.500px.com/v1/upload");
+				HttpPost httpPost = new HttpPost(
+						"https://api.500px.com/v1/upload");
 
-//				CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
-//						getString(R.string.px_consumer_key),
-//						getString(R.string.px_consumer_secret));
-//
-//				consumer.setTokenWithSecret(user.accessToken.getToken(),
-//						user.accessToken.getTokenSecret());
-//				consumer.sign(httpPost);
-				
-				
+				// CommonsHttpOAuthConsumer consumer = new
+				// CommonsHttpOAuthConsumer(
+				// getString(R.string.px_consumer_key),
+				// getString(R.string.px_consumer_secret));
+				//
+				// consumer.setTokenWithSecret(user.accessToken.getToken(),
+				// user.accessToken.getTokenSecret());
+				// consumer.sign(httpPost);
+
 				MultipartEntity entity = new MultipartEntity(
 						HttpMultipartMode.BROWSER_COMPATIBLE);
 
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+				Bitmap bitmap = android.provider.MediaStore.Images.Media
+						.getBitmap(getContentResolver(), selectedImage);
 				bitmap.compress(CompressFormat.JPEG, 100, bos);
+
 				byte[] data = bos.toByteArray();
 				entity.addPart("photo_id", new StringBody(photo_id));
 				entity.addPart("upload_key", new StringBody(upload_key));
 				entity.addPart("file", new ByteArrayBody(data, "myImage.jpg"));
-				entity.addPart("consumer_key", new StringBody(getString(R.string.px_consumer_key)));
-				entity.addPart("access_key", new StringBody(user.accessToken.getToken()));
+				entity.addPart("consumer_key", new StringBody(
+						getString(R.string.px_consumer_key)));
+				entity.addPart("access_key",
+						new StringBody(user.accessToken.getToken()));
 				httpPost.setEntity(entity);
 				HttpResponse response = httpClient.execute(httpPost,
 						localContext);
@@ -149,20 +196,21 @@ public class PhotoActivity extends RoboActivity implements
 								response.getEntity().getContent(), "UTF-8"));
 
 				String sResponse = reader.readLine();
-				
-//				final int statusCode = response.getStatusLine().getStatusCode();
-//
-//				if (statusCode != HttpStatus.SC_OK) {
-//					return "success";
-//				}
-//				return null;
-				
+
+				// final int statusCode =
+				// response.getStatusLine().getStatusCode();
+				//
+				// if (statusCode != HttpStatus.SC_OK) {
+				// return "success";
+				// }
+				// return null;
+
 				return sResponse;
 			} catch (Exception e) {
 				// if (dialog.isShowing())
 				// dialog.dismiss();
-//				Toast.makeText(getApplicationContext(),
-//						"error , too bad. Sorry", Toast.LENGTH_LONG).show();
+				// Toast.makeText(getApplicationContext(),
+				// "error , too bad. Sorry", Toast.LENGTH_LONG).show();
 				Log.e(e.getClass().getName(), e.getMessage(), e);
 				return null;
 			}
@@ -190,9 +238,9 @@ public class PhotoActivity extends RoboActivity implements
 								"Photo uploaded successfully",
 								Toast.LENGTH_SHORT).show();
 						Log.w(TAG, message);
-						
+
 						onFinishTask();
-						
+
 					}
 				}
 			} catch (Exception e) {
@@ -205,13 +253,13 @@ public class PhotoActivity extends RoboActivity implements
 
 	@Override
 	public void success(JSONObject json) {
-		
+
 		try {
-			new ImageUploadTask().execute(json.getJSONObject("photo").getString("id"),json.getString("upload_key"));
+			new ImageUploadTask().execute(json.getJSONObject("photo")
+					.getString("id"), json.getString("upload_key"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
 
 	}
 
@@ -220,8 +268,8 @@ public class PhotoActivity extends RoboActivity implements
 		// TODO Auto-generated method stub
 
 	}
-	
-	public void onFinishTask(){
+
+	public void onFinishTask() {
 		Intent i = new Intent(PhotoActivity.this, ConfirmationActivity.class);
 		startActivity(i);
 		finish();
