@@ -30,9 +30,11 @@ public class CreatePhotoTask extends AsyncTask<Object, Void, JSONObject> {
 	@Override
 	protected JSONObject doInBackground(Object... params) {
 		AccessToken accessToken = (AccessToken) params[0];
+		String name = (String) params[1];
+		String desc = (String) params[2];
 		
-		
-		JSONObject json = ApiHelper.requestPost(accessToken, "/photos?name=Hello&description=World");
+		String url = String.format("/photos?name=%s&description=%s", name, desc);
+		JSONObject json = ApiHelper.requestPost(accessToken, url);
 		
 		try {
 			Log.w(TAG,json.getJSONObject("photo").getString("id"));

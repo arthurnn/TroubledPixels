@@ -9,5 +9,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_photo">PhotoActivity</string>
+    <string name="title_activity_confirmation">ConfirmationActivity</string>
 
 </resources>

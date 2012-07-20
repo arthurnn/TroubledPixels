@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -24,6 +21,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
@@ -34,6 +32,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -52,7 +51,11 @@ public class PhotoActivity extends RoboActivity implements
 
 	@InjectView(R.id.submit_btn)
 	Button submitButton;
-
+	
+	@InjectView(R.id.editText1) EditText titleEdit;
+	@InjectView(R.id.editText2) EditText descEdit;
+	
+	
 	@Inject
 	User user;
 
@@ -84,11 +87,21 @@ public class PhotoActivity extends RoboActivity implements
 			@Override
 			public void onClick(View v) {
 				new CreatePhotoTask(PhotoActivity.this)
-						.execute(user.accessToken);
+						.execute(user.accessToken, titleEdit.getText().toString(), descEdit.getText().toString() );
 
 			}
 		});
 
+	}
+	
+	@Override
+	protected void onDestroy() {
+		
+
+		pictureImageView.setImageDrawable(null);
+//		bitmap.recycle();
+		
+		super.onDestroy();
 	}
 
 	@Override
@@ -178,6 +191,8 @@ public class PhotoActivity extends RoboActivity implements
 								Toast.LENGTH_SHORT).show();
 						Log.w(TAG, message);
 						
+						onFinishTask();
+						
 					}
 				}
 			} catch (Exception e) {
@@ -197,12 +212,19 @@ public class PhotoActivity extends RoboActivity implements
 			e.printStackTrace();
 		}
 		
+
 	}
 
 	@Override
 	public void fail() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public void onFinishTask(){
+		Intent i = new Intent(PhotoActivity.this, ConfirmationActivity.class);
+		startActivity(i);
+		finish();
 	}
 
 }
