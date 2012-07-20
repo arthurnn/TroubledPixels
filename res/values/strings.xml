@@ -8,5 +8,6 @@
     <string name="title_activity_main">TroubledPixels</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_photo">PhotoActivity</string>
 
 </resources>

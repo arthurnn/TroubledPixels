@@ -22,51 +22,57 @@ import com.fivehundredpx.troubledpixels.tasks.XAuth500pxTask;
 import com.google.inject.Inject;
 
 @ContentView(R.layout.activity_main)
-public class MainActivity extends RoboActivity implements XAuth500pxTask.Delegate, UserDetailTask.Delegate {
+public class MainActivity extends RoboActivity implements
+		XAuth500pxTask.Delegate, UserDetailTask.Delegate {
 	private static final String TAG = "MainActivity";
-	
-	@InjectView(R.id.login_password) EditText passText;
-	@InjectView(R.id.login_email) EditText loginText;
-	@InjectView(R.id.login_btn) Button loginBtn;
-	
-	@Inject User user;
-	
-	private XAuth500pxTask loginTask ;
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        loginTask = new XAuth500pxTask(this);
-        
-        loginBtn.setOnClickListener(new OnClickListener() {
-			
+
+	@InjectView(R.id.login_password)
+	EditText passText;
+	@InjectView(R.id.login_email)
+	EditText loginText;
+	@InjectView(R.id.login_btn)
+	Button loginBtn;
+
+	@Inject
+	User user;
+
+	private XAuth500pxTask loginTask;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		loginTask = new XAuth500pxTask(this);
+
+		loginBtn.setOnClickListener(new OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
-//				loginTask.execute(loginText.getText().toString(),passText.getText().toString()); TODO
+				// loginTask.execute(loginText.getText().toString(),passText.getText().toString());
+				// TODO
 				loginTask.execute("arthurnn", "password=a");
 			}
 		});
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }
-    
-    @Override
-	public void success(AccessToken result) {
-		Log.w(TAG,"success");
-		user.accessToken = result;
-		
-		new UserDetailTask(this).execute(result);
-		
 	}
-	
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_main, menu);
+		return true;
+	}
+
+	@Override
+	public void success(AccessToken result) {
+		Log.w(TAG, "success");
+		user.accessToken = result;
+
+		new UserDetailTask(this).execute(result);
+
+	}
+
 	@Override
 	public void fail() {
-		
+
 	}
 
 	@Override
@@ -76,13 +82,11 @@ public class MainActivity extends RoboActivity implements XAuth500pxTask.Delegat
 			this.user.userpic_url = user.getString("userpic_url");
 			this.user.fullname = user.getString("fullname");
 		} catch (JSONException e) {
-			e.printStackTrace();
+			Log.e(TAG, "", e);
 		}
-		
-		
+
 		startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-		
+		finish();
 	}
 
-    
 }

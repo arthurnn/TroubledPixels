@@ -6,16 +6,13 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,18 +32,15 @@ public class ProfileActivity extends RoboActivity implements
 
 	private static final int TAKE_PICTURE = 2 << 2;
 
-	@InjectView(R.id.profile_image)
-	ImageView profileImage;
-	@InjectView(R.id.camera_btn)
-	Button cameraBtn;
+	@InjectView(R.id.profile_image) ImageView profileImage;
+	@InjectView(R.id.camera_btn) Button cameraBtn;
 
-	@Inject
-	User user;
+	@Inject User user;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+//		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		if (null == savedInstanceState)
 			new ImageDownloadTask(this).execute(user.userpic_url);
@@ -80,29 +74,22 @@ public class ProfileActivity extends RoboActivity implements
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    super.onActivityResult(requestCode, resultCode, data);
-	    switch (requestCode) {
-	    case TAKE_PICTURE:
-	        if (resultCode == Activity.RESULT_OK) {
-	            Uri selectedImage = imageUri;
-	            getContentResolver().notifyChange(selectedImage, null);
-//	            ImageView imageView = (ImageView) findViewById(R.id.ImageView);
-	            ContentResolver cr = getContentResolver();
-	            Bitmap bitmap;
-	            try {
-	                 bitmap = android.provider.MediaStore.Images.Media
-	                 .getBitmap(cr, selectedImage);
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
+		case TAKE_PICTURE:
+			if (resultCode == Activity.RESULT_OK) {
+				Uri selectedImage = imageUri;
+				getContentResolver().notifyChange(selectedImage, null);
 
-//	                imageView.setImageBitmap(bitmap);
-	                Toast.makeText(this, selectedImage.toString(),
-	                        Toast.LENGTH_LONG).show();
-	            } catch (Exception e) {
-	                Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT)
-	                        .show();
-	                Log.e("Camera", e.toString());
-	            }
-	        }
-	    }
+				Toast.makeText(this, selectedImage.toString(),
+						Toast.LENGTH_LONG).show();
+				
+				Intent i = new Intent(ProfileActivity.this, PhotoActivity.class);
+				i.setData(selectedImage);
+				startActivity(i);
+
+			}
+		}
 	}
 
 	@Override
