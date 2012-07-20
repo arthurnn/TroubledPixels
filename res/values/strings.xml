@@ -1,0 +1,10 @@
+<resources>
+    <string name="px.consumer.key">vFlLsHWW5WfvrCoYMLqtgIe5sOZgaLJNs7Rd4R57</string>
+    <string name="px.consumer.secret">34ecKGIcru31l2WO25dYSPTn3JLlawA532vNnxaM</string>
+    
+    <string name="app_name">TroubledPixels</string>
+    <string name="login_500px_label">Login with 500px</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">TroubledPixels</string>
+
+</resources>
