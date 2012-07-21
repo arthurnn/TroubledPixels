@@ -13,11 +13,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -41,7 +39,6 @@ public class ProfileActivity extends RoboActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		if (null == savedInstanceState)
 			new ImageDownloadTask(this).execute(user.userpic_url);
@@ -76,8 +73,8 @@ public class ProfileActivity extends RoboActivity implements
 				Uri selectedImage = imageUri;
 				getContentResolver().notifyChange(selectedImage, null);
 
-				Toast.makeText(this, selectedImage.toString(),
-						Toast.LENGTH_LONG).show();
+//				Toast.makeText(this, selectedImage.toString(),
+//						Toast.LENGTH_LONG).show();
 				
 				Intent i = new Intent(ProfileActivity.this, PhotoActivity.class);
 				i.setData(selectedImage);

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.fivehundredpx.api.auth.AccessToken;
 import com.fivehundredpx.troubledpixels.controller.User;
@@ -39,7 +40,6 @@ public class MainActivity extends RoboActivity implements
 		super.onCreate(savedInstanceState);
 
 		ZubhiumSDK.getZubhiumSDKInstance(getApplicationContext(), "e9454fd68a4a5575a3c11212e77fba");
-	   
 		
 		loginTask = new XAuth500pxTask(this);
 
@@ -47,9 +47,7 @@ public class MainActivity extends RoboActivity implements
 
 			@Override
 			public void onClick(View v) {
-//				 loginTask.execute(loginText.getText().toString(),passText.getText().toString());
-				// TODO
-				loginTask.execute("arthurnn", "password=a");
+				 loginTask.execute(loginText.getText().toString(),passText.getText().toString());
 			}
 		});
 	}
@@ -66,7 +64,10 @@ public class MainActivity extends RoboActivity implements
 
 	@Override
 	public void fail() {
-
+		Toast.makeText(this, "Login Failed, please try again.",
+				Toast.LENGTH_LONG).show();
+		
+		loginTask = new XAuth500pxTask(this);
 	}
 
 	@Override

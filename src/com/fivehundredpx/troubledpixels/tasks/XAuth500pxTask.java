@@ -57,12 +57,10 @@ public class XAuth500pxTask extends AsyncTask<String, Void, AccessToken> {
 
 	@Override
 	protected void onPostExecute(AccessToken result) {
-
 		if (null != result)
 			_d.success(result);
 		else
 			_d.fail();
-			
 
 	}
 }
