@@ -16,10 +16,22 @@
             android:layout_marginTop="35dp"
             android:src="@drawable/ic_launcher" />
 
-        <ImageView
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/tp_profile_background" />
+            android:background="@drawable/tp_profile_background">
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="213dp"
+                android:text="Hello, "
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            
+        </RelativeLayout>
     </RelativeLayout>
 
     <ImageButton
