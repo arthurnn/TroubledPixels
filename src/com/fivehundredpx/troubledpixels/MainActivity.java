@@ -6,7 +6,10 @@ import org.json.JSONObject;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,23 +31,36 @@ public class MainActivity extends RoboActivity implements
 		XAuth500pxTask.Delegate, UserDetailTask.Delegate {
 	private static final String TAG = "MainActivity";
 
-	@InjectView(R.id.login_password) EditText passText;
-	@InjectView(R.id.login_email) EditText loginText;
-	@InjectView(R.id.login_btn) Button loginBtn;
+	@InjectView(R.id.login_password)
+	EditText passText;
+	@InjectView(R.id.login_email)
+	EditText loginText;
+	@InjectView(R.id.login_btn)
+	Button loginBtn;
 
-	@Inject User user;
-
+	@Inject
+	User user;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		SharedPreferences preferences = getSharedPreferences("TroubledSharedPreferences", Context.MODE_PRIVATE);
+
+		String accesToken = preferences.getString("Troubled.accesToken", null);
+		String tokenSecret = preferences
+				.getString("Troubled.tokenSecret", null);
+
+		if (null != accesToken && null != tokenSecret) {
+			onSuccess(new AccessToken(accesToken, tokenSecret));
+		}
 
 		loginBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				final XAuth500pxTask  loginTask = new XAuth500pxTask(MainActivity.this);
+				final XAuth500pxTask loginTask = new XAuth500pxTask(
+						MainActivity.this);
 				loginTask.execute(getString(R.string.px_consumer_key),
 						getString(R.string.px_consumer_secret), loginText
 								.getText().toString(), passText.getText()
@@ -57,7 +73,14 @@ public class MainActivity extends RoboActivity implements
 	public void onSuccess(AccessToken result) {
 		Log.w(TAG, "success");
 		user.accessToken = result;
-
+		
+		SharedPreferences preferences = getSharedPreferences("TroubledSharedPreferences", Context.MODE_PRIVATE);
+		Editor editor = preferences.edit();
+		editor.putString("Troubled.accesToken", result.getToken());
+		editor.putString("Troubled.tokenSecret", result.getTokenSecret());
+		editor.commit();
+		
+		
 		final PxApi api = new PxApi(user.accessToken,
 				getString(R.string.px_consumer_key),
 				getString(R.string.px_consumer_secret));

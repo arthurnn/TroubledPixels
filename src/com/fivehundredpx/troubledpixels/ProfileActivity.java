@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.fivehundredpx.troubledpixels.controller.User;
 import com.fivehundredpx.troubledpixels.tasks.ImageDownloadTask;
@@ -52,7 +51,6 @@ public class ProfileActivity extends RoboActivity implements
 
 	}
 
-
 	private Uri imageUri;
 
 	public void takePhoto(View view) {
@@ -70,12 +68,9 @@ public class ProfileActivity extends RoboActivity implements
 		switch (requestCode) {
 		case TAKE_PICTURE:
 			if (resultCode == Activity.RESULT_OK) {
-				Uri selectedImage = imageUri;
+				final Uri selectedImage = imageUri;
 				getContentResolver().notifyChange(selectedImage, null);
 
-//				Toast.makeText(this, selectedImage.toString(),
-//						Toast.LENGTH_LONG).show();
-				
 				Intent i = new Intent(ProfileActivity.this, PhotoActivity.class);
 				i.setData(selectedImage);
 				startActivity(i);

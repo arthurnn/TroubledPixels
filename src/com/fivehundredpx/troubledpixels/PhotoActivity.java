@@ -1,34 +1,16 @@
 package com.fivehundredpx.troubledpixels;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import roboguice.activity.RoboActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -40,12 +22,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.fivehundredpx.troubledpixels.controller.User;
-import com.fivehundredpx.troubledpixels.tasks.CreatePhotoTask;
+import com.fivehundredpx.troubledpixels.services.UploadService;
 import com.google.inject.Inject;
 
 @ContentView(R.layout.activity_photo)
-public class PhotoActivity extends RoboActivity implements
-		CreatePhotoTask.Delegate {
+public class PhotoActivity extends RoboActivity  {
 
 	private static final String TAG = "PhotoActivity";
 
@@ -88,9 +69,14 @@ public class PhotoActivity extends RoboActivity implements
 		submitButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new CreatePhotoTask(PhotoActivity.this).execute(
-						user.accessToken, titleEdit.getText().toString(),
-						descEdit.getText().toString());
+				doBindService();
+//				Intent i = new Intent(PhotoActivity.this,UploadService.class);
+//				i.putExtra("selectedImageUri", selectedImage);
+//				startService(i);
+				
+//				new CreatePhotoTask(PhotoActivity.this).execute(
+//						user.accessToken, titleEdit.getText().toString(),
+//						descEdit.getText().toString());
 
 			}
 		});
@@ -150,128 +136,60 @@ public class PhotoActivity extends RoboActivity implements
 		return true;
 	}
 
-	class ImageUploadTask extends AsyncTask<String, Void, String> {
-		@Override
-		protected String doInBackground(String... pa) {
+//	private UploadService mBoundService;
+//
+//	private ServiceConnection mConnection = new ServiceConnection() {
+//	    public void onServiceConnected(ComponentName className, IBinder service) {
+//	        // This is called when the connection with the service has been
+//	        // established, giving us the service object we can use to
+//	        // interact with the service.  Because we have bound to a explicit
+//	        // service that we know is running in our own process, we can
+//	        // cast its IBinder to a concrete class and directly access it.
+//	        mBoundService = ((UploadService.LocalBinder)service).getService();
+//
+//	        // Tell the user about this for our demo.
+////	        Toast.makeText(PhotoActivity.this, R.string.local_service_connected,
+////	                Toast.LENGTH_SHORT).show();
+//	    }
+//
+//	    public void onServiceDisconnected(ComponentName className) {
+//	        // This is called when the connection with the service has been
+//	        // unexpectedly disconnected -- that is, its process crashed.
+//	        // Because it is running in our same process, we should never
+//	        // see this happen.
+//	        mBoundService = null;
+//	        Toast.makeText(PhotoActivity.this, R.string.local_service_disconnected,
+//	                Toast.LENGTH_SHORT).show();
+//	    }
+//	};
 
-			final String photo_id = pa[0];
-			final String upload_key = pa[1];
-			try {
-				HttpClient httpClient = new DefaultHttpClient();
-				HttpContext localContext = new BasicHttpContext();
-				HttpPost httpPost = new HttpPost(
-						"https://api.500px.com/v1/upload");
+	private boolean mIsBound;
+	void doBindService() {
 
-				// CommonsHttpOAuthConsumer consumer = new
-				// CommonsHttpOAuthConsumer(
-				// getString(R.string.px_consumer_key),
-				// getString(R.string.px_consumer_secret));
-				//
-				// consumer.setTokenWithSecret(user.accessToken.getToken(),
-				// user.accessToken.getTokenSecret());
-				// consumer.sign(httpPost);
-
-				MultipartEntity entity = new MultipartEntity(
-						HttpMultipartMode.BROWSER_COMPATIBLE);
-
-				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-				Bitmap bitmap = android.provider.MediaStore.Images.Media
-						.getBitmap(getContentResolver(), selectedImage);
-				bitmap.compress(CompressFormat.JPEG, 100, bos);
-
-				byte[] data = bos.toByteArray();
-				entity.addPart("photo_id", new StringBody(photo_id));
-				entity.addPart("upload_key", new StringBody(upload_key));
-				entity.addPart("file", new ByteArrayBody(data, "myImage.jpg"));
-				entity.addPart("consumer_key", new StringBody(
-						getString(R.string.px_consumer_key)));
-				entity.addPart("access_key",
-						new StringBody(user.accessToken.getToken()));
-				httpPost.setEntity(entity);
-				HttpResponse response = httpClient.execute(httpPost,
-						localContext);
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(
-								response.getEntity().getContent(), "UTF-8"));
-
-				String sResponse = reader.readLine();
-
-				// final int statusCode =
-				// response.getStatusLine().getStatusCode();
-				//
-				// if (statusCode != HttpStatus.SC_OK) {
-				// return "success";
-				// }
-				// return null;
-
-				return sResponse;
-			} catch (Exception e) {
-				// if (dialog.isShowing())
-				// dialog.dismiss();
-				// Toast.makeText(getApplicationContext(),
-				// "error , too bad. Sorry", Toast.LENGTH_LONG).show();
-				Log.e(e.getClass().getName(), e.getMessage(), e);
-				return null;
-			}
-		}
-
-		@Override
-		protected void onProgressUpdate(Void... unsued) {
-
-		}
-
-		@Override
-		protected void onPostExecute(String sResponse) {
-			try {
-				// if (dialog.isShowing())
-				// dialog.dismiss();
-
-				if (sResponse != null) {
-					JSONObject JResponse = new JSONObject(sResponse);
-					String message = JResponse.getString("error");
-					if (!"None.".equals(message)) {
-						Toast.makeText(getApplicationContext(), message,
-								Toast.LENGTH_LONG).show();
-					} else {
-						Toast.makeText(getApplicationContext(),
-								"Photo uploaded successfully",
-								Toast.LENGTH_SHORT).show();
-						Log.w(TAG, message);
-
-						onFinishTask();
-
-					}
-				}
-			} catch (Exception e) {
-				Toast.makeText(getApplicationContext(), "error...",
-						Toast.LENGTH_LONG).show();
-				Log.e(e.getClass().getName(), e.getMessage(), e);
-			}
-		}
-	}
-	String photoId;
-	@Override
-	public void success(JSONObject json) {
-
-		try {
-			photoId = json.getJSONObject("photo").getString("id");
-			new ImageUploadTask().execute(photoId, json.getString("upload_key"));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
+		Intent i = new Intent(PhotoActivity.this, UploadService.class);
+		i.putExtra("selectedImageUri", selectedImage);
+		i.putExtra("accessToken", user.accessToken);
+		
+//		bindService(i, mConnection, Context.BIND_AUTO_CREATE);
+		
+		
+		startService(i);
+	    mIsBound = true;
+	    onFinishTask();
 	}
 
-	@Override
-	public void fail() {
-		// TODO Auto-generated method stub
+//	void doUnbindService() {
+//	    if (mIsBound) {
+//	        // Detach our existing connection.
+//	        unbindService(mConnection);
+//	        mIsBound = false;
+//	    }
+//	}
 
-	}
 
 	public void onFinishTask() {
 		Intent i = new Intent(PhotoActivity.this, ConfirmationActivity.class);
-		i.putExtra("photoId", photoId);
+//		i.putExtra("photoId", photoId);
 		startActivity(i);
 		finish();
 	}

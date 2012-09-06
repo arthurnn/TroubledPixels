@@ -10,5 +10,11 @@
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_photo">PhotoActivity</string>
     <string name="title_activity_confirmation">ConfirmationActivity</string>
-
+    
+    
+    <string name="local_service_connected">local_service_connected</string>
+    <string name="local_service_disconnected">local_service_disconnected</string>
+    
+    
+    
 </resources>

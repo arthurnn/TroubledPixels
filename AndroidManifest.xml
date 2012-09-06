@@ -4,7 +4,7 @@
     android:versionName="0.1.2" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="11"
         android:targetSdkVersion="15" />
 
     <application
@@ -42,6 +42,10 @@
             android:name=".ConfirmationActivity"
             android:label="@string/title_activity_confirmation" >
         </activity>
+        
+        <service android:name=".services.UploadService">
+        </service>
+            
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
