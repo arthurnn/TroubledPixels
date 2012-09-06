@@ -255,8 +255,7 @@ public class PhotoActivity extends RoboActivity implements
 	public void success(JSONObject json) {
 
 		try {
-			photoId = json.getJSONObject("photo")
-			.getString("id");
+			photoId = json.getJSONObject("photo").getString("id");
 			new ImageUploadTask().execute(photoId, json.getString("upload_key"));
 		} catch (JSONException e) {
 			e.printStackTrace();

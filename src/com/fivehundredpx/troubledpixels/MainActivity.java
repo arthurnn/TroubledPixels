@@ -14,12 +14,13 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.fivehundredpx.api.FiveHundredException;
+import com.fivehundredpx.api.PxApi;
 import com.fivehundredpx.api.auth.AccessToken;
+import com.fivehundredpx.api.tasks.UserDetailTask;
+import com.fivehundredpx.api.tasks.XAuth500pxTask;
 import com.fivehundredpx.troubledpixels.controller.User;
-import com.fivehundredpx.troubledpixels.tasks.UserDetailTask;
-import com.fivehundredpx.troubledpixels.tasks.XAuth500pxTask;
 import com.google.inject.Inject;
-import com.zubhium.ZubhiumSDK;
 
 @ContentView(R.layout.activity_main)
 public class MainActivity extends RoboActivity implements
@@ -32,45 +33,40 @@ public class MainActivity extends RoboActivity implements
 
 	@Inject User user;
 
-	private XAuth500pxTask loginTask;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		ZubhiumSDK.getZubhiumSDKInstance(getApplicationContext(), "e9454fd68a4a5575a3c11212e77fba");
-	   
-		
-		loginTask = new XAuth500pxTask(this);
 
 		loginBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-//				 loginTask.execute(loginText.getText().toString(),passText.getText().toString());
-				// TODO
-				loginTask.execute("arthurnn", "password=a");
+				final XAuth500pxTask  loginTask = new XAuth500pxTask(MainActivity.this);
+				loginTask.execute(getString(R.string.px_consumer_key),
+						getString(R.string.px_consumer_secret), loginText
+								.getText().toString(), passText.getText()
+								.toString());
 			}
 		});
 	}
-	
 
 	@Override
-	public void success(AccessToken result) {
+	public void onSuccess(AccessToken result) {
 		Log.w(TAG, "success");
 		user.accessToken = result;
 
-		new UserDetailTask(this).execute(result);
+		final PxApi api = new PxApi(user.accessToken,
+				getString(R.string.px_consumer_key),
+				getString(R.string.px_consumer_secret));
+
+		new UserDetailTask(this).execute(api);
 
 	}
 
 	@Override
-	public void fail() {
-
-	}
-
-	@Override
-	public void success(JSONObject user) {
+	public void onSuccess(JSONObject user) {
 		Log.w(TAG, user.toString());
 		try {
 			this.user.userpic_url = user.getString("userpic_url");
@@ -81,6 +77,16 @@ public class MainActivity extends RoboActivity implements
 
 		startActivity(new Intent(MainActivity.this, ProfileActivity.class));
 		finish();
+	}
+
+	@Override
+	public void onFail() {
+		;
+	}
+
+	@Override
+	public void onFail(FiveHundredException e) {
+		onFail();
 	}
 
 }
