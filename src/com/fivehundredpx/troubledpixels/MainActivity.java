@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.fivehundredpx.api.FiveHundredException;
 import com.fivehundredpx.api.PxApi;
@@ -81,7 +82,8 @@ public class MainActivity extends RoboActivity implements
 
 	@Override
 	public void onFail() {
-		;
+		Toast.makeText(this, "Login Failed, please try again.",
+				Toast.LENGTH_LONG).show();
 	}
 
 	@Override
