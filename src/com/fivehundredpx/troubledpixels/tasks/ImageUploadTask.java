@@ -39,55 +39,30 @@ public class ImageUploadTask extends AsyncTask<Object, Void, String> {
 		try {
 			HttpClient httpClient = new DefaultHttpClient();
 			HttpContext localContext = new BasicHttpContext();
-			HttpPost httpPost = new HttpPost(
-					"https://api.500px.com/v1/upload");
-
+			HttpPost httpPost = new HttpPost("https://api.500px.com/v1/upload");
 
 			final Context c = Application.getContext();
-			
+
 			MultipartEntity entity = new MultipartEntity(
 					HttpMultipartMode.BROWSER_COMPATIBLE);
-			
-//			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-//			Bitmap bitmap = android.provider.MediaStore.Images.Media.getBitmap(c.getContentResolver(), selectedImage);
-//			bitmap.compress(CompressFormat.JPEG, 100, bos);
-
-//			android.provider.MediaStore.Images.Media.
-			
-//			byte[] data = bos.toByteArray();
 			entity.addPart("photo_id", new StringBody(photo_id));
 			entity.addPart("upload_key", new StringBody(upload_key));
-//			entity.addPart("file", new ByteArrayBody(data, "myImage.jpg"));
-			entity.addPart("file", new FileBody(new File(selectedImage.getPath())));
-			
-			
-			entity.addPart("consumer_key", new StringBody(
-					c.getString(R.string.px_consumer_key)));
+			entity.addPart("file",
+					new FileBody(new File(selectedImage.getPath())));
+
+			entity.addPart("consumer_key",
+					new StringBody(c.getString(R.string.px_consumer_key)));
 			entity.addPart("access_key", new StringBody(accessToken.getToken()));
 			httpPost.setEntity(entity);
-			HttpResponse response = httpClient.execute(httpPost,
-					localContext);
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(
-							response.getEntity().getContent(), "UTF-8"));
+			HttpResponse response = httpClient.execute(httpPost, localContext);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent(), "UTF-8"));
 
 			String sResponse = reader.readLine();
 
-			// final int statusCode =
-			// response.getStatusLine().getStatusCode();
-			//
-			// if (statusCode != HttpStatus.SC_OK) {
-			// return "success";
-			// }
-			// return null;
-
 			return sResponse;
 		} catch (Exception e) {
-			// if (dialog.isShowing())
-			// dialog.dismiss();
-			// Toast.makeText(getApplicationContext(),
-			// "error , too bad. Sorry", Toast.LENGTH_LONG).show();
 			Log.e(e.getClass().getName(), e.getMessage(), e);
 			return null;
 		}
@@ -102,23 +77,19 @@ public class ImageUploadTask extends AsyncTask<Object, Void, String> {
 	protected void onPostExecute(String sResponse) {
 		final Context c = Application.getContext();
 		try {
-			// if (dialog.isShowing())
-			// dialog.dismiss();
 
 			if (sResponse != null) {
 				JSONObject JResponse = new JSONObject(sResponse);
 				String message = JResponse.getString("error");
 				if (!"None.".equals(message)) {
-					
+
 					Toast.makeText(c.getApplicationContext(), message,
 							Toast.LENGTH_LONG).show();
 				} else {
 					Toast.makeText(c.getApplicationContext(),
-							"Photo uploaded successfully",
-							Toast.LENGTH_SHORT).show();
+							"Photo uploaded successfully", Toast.LENGTH_SHORT)
+							.show();
 					Log.w(TAG, message);
-
-//					onFinishTask();
 
 				}
 			}

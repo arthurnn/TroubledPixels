@@ -14,31 +14,30 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="35dp"
-            android:src="@drawable/ic_launcher" />
+            android:src="@null" />
 
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/tp_profile_background">
+            android:background="@drawable/tp_profile_background" >
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/nameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="213dp"
-                android:text="Hello, "
                 android:textAppearance="?android:attr/textAppearanceLarge" />
-            
         </RelativeLayout>
     </RelativeLayout>
 
-    <ImageButton
+    <com.fivehundredpx.troubledpixels.views.ResizableImageButton
         android:id="@+id/camera_btn"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/photo_button_selector" />
+        android:background="@drawable/photo_button_selector"
+         />
 
 </RelativeLayout>

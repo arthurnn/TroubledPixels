@@ -44,6 +44,8 @@ public class CreatePhotoTask extends AsyncTask<Object, Void, JSONObject> {
 		final ArrayList<NameValuePair> postParams = new ArrayList<NameValuePair>();
 		postParams.add(new BasicNameValuePair("name", name));
 		postParams.add(new BasicNameValuePair("description", desc));
+		// dont post to profile. only to library
+		postParams.add(new BasicNameValuePair("privacy", "1"));
 		
 		
 		final PxApi api = new PxApi(accessToken,

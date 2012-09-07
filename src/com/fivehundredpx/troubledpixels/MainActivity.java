@@ -31,15 +31,11 @@ public class MainActivity extends RoboActivity implements
 		XAuth500pxTask.Delegate, UserDetailTask.Delegate {
 	private static final String TAG = "MainActivity";
 
-	@InjectView(R.id.login_password)
-	EditText passText;
-	@InjectView(R.id.login_email)
-	EditText loginText;
-	@InjectView(R.id.login_btn)
-	Button loginBtn;
+	@InjectView(R.id.login_password) EditText passText;
+	@InjectView(R.id.login_email) EditText loginText;
+	@InjectView(R.id.login_btn) Button loginBtn;
 
-	@Inject
-	User user;
+	@Inject User user;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,8 +43,8 @@ public class MainActivity extends RoboActivity implements
 
 		SharedPreferences preferences = getSharedPreferences("TroubledSharedPreferences", Context.MODE_PRIVATE);
 
-		String accesToken = preferences.getString("Troubled.accesToken", null);
-		String tokenSecret = preferences
+		final String accesToken = preferences.getString("Troubled.accesToken", null);
+		final String tokenSecret = preferences
 				.getString("Troubled.tokenSecret", null);
 
 		if (null != accesToken && null != tokenSecret) {
@@ -91,7 +87,7 @@ public class MainActivity extends RoboActivity implements
 
 	@Override
 	public void onSuccess(JSONObject user) {
-		Log.w(TAG, user.toString());
+		//Log.w(TAG, user.toString());
 		try {
 			this.user.userpic_url = user.getString("userpic_url");
 			this.user.fullname = user.getString("fullname");

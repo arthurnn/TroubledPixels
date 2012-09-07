@@ -169,6 +169,9 @@ public class PhotoActivity extends RoboActivity  {
 		Intent i = new Intent(PhotoActivity.this, UploadService.class);
 		i.putExtra("selectedImageUri", selectedImage);
 		i.putExtra("accessToken", user.accessToken);
+		i.putExtra("title",titleEdit.getText().toString());
+		i.putExtra("description",descEdit.getText().toString());
+		
 		
 //		bindService(i, mConnection, Context.BIND_AUTO_CREATE);
 		

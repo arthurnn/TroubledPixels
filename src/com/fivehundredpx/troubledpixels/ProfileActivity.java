@@ -6,6 +6,7 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -13,11 +14,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
+import android.text.Html;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.fivehundredpx.troubledpixels.controller.User;
 import com.fivehundredpx.troubledpixels.tasks.ImageDownloadTask;
@@ -32,6 +36,7 @@ public class ProfileActivity extends RoboActivity implements
 
 	@InjectView(R.id.profile_image) ImageView profileImage;
 	@InjectView(R.id.camera_btn) ImageButton cameraBtn;
+	@InjectView(R.id.nameTextView) TextView nameTextView;
 
 	@Inject User user;
 
@@ -41,6 +46,11 @@ public class ProfileActivity extends RoboActivity implements
 
 		if (null == savedInstanceState)
 			new ImageDownloadTask(this).execute(user.userpic_url);
+
+		final String htmlString = String.format("Hello, <b>%s</b>.",
+				user.fullname);
+		nameTextView.setText(Html.fromHtml(htmlString),
+				TextView.BufferType.SPANNABLE);
 
 		cameraBtn.setOnClickListener(new OnClickListener() {
 			@Override

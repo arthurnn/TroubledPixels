@@ -50,11 +50,12 @@ public class UploadService extends Service implements CreatePhotoTask.Delegate {
 		this.selectedImage = intent.getParcelableExtra("selectedImageUri");
 		this.accessToken = intent.getParcelableExtra("accessToken");
 
-		Toast.makeText(this, "Service onBind ..." + selectedImage,
-				Toast.LENGTH_LONG).show();
+		final String title = intent.getStringExtra("title");
+		final String desc = intent.getStringExtra("description");
+//		Toast.makeText(this, "Service onBind ..." + selectedImage,
+//				Toast.LENGTH_LONG).show();
 
-		new CreatePhotoTask(UploadService.this).execute(accessToken, "title",
-				"desc");
+		new CreatePhotoTask(UploadService.this).execute(accessToken, title, desc);
 
 		return START_STICKY;
 	}
@@ -68,12 +69,14 @@ public class UploadService extends Service implements CreatePhotoTask.Delegate {
 	// String photoId;
 	@Override
 	public void success(JSONObject json) {
-		Toast.makeText(this, "success...", Toast.LENGTH_SHORT).show();
+//		Toast.makeText(this, "success...", Toast.LENGTH_SHORT).show();
 		try {
 			String photoId = json.getJSONObject("photo").getString("id");
 
 			new ImageUploadTask().execute(photoId,
 					json.getString("upload_key"), selectedImage, accessToken);
+			
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

@@ -1,52 +1,66 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ScrollView01"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    tools:context=".PhotoActivity" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/tp_background"
+   	>
 
-	<RelativeLayout
-	    android:orientation="vertical"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content" >
-	
-	    <ImageView
-	        android:id="@+id/pic"
-	        android:layout_width="fill_parent"
-	        android:layout_height="300dp" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
 
-	    <EditText
-	        android:id="@+id/editText1"
-	        android:layout_alignLeft="@id/pic"
-	        android:layout_below="@id/pic"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:hint="title"
-	        android:ems="10" >
+        <ImageView
+            android:id="@+id/pic"
+            android:layout_width="fill_parent"
+            android:layout_height="300dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="top"
+            android:layout_marginTop="0dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart" />
 
-	        <requestFocus />
-	    </EditText>
-	    
-	   	<EditText
-	        android:id="@+id/editText2"
-	        android:layout_alignLeft="@id/editText1"
-	        android:layout_below="@id/editText1"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:hint="description"
-	        android:ems="10" >
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pic"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:hint="Title"
+            android:textColor="@android:color/white" >
 
-	        <requestFocus />
-	    </EditText>
+            <requestFocus />
+        </EditText>
 
-	    <Button
-	        android:id="@+id/submit_btn"
-	        android:layout_alignLeft="@id/editText2"
-	        android:layout_below="@id/editText2"
-	        android:layout_width="277dp"
-	        android:layout_centerInParent="true"
-	        android:layout_height="wrap_content"
-	        android:text="Submit" />
-	
-	</RelativeLayout>
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editText1"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="20dp"
+            android:ems="10"
+            android:hint="Description"
+            android:textColor="@android:color/white" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/submit_btn"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editText2"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="15dp"
+            android:background="@android:color/holo_blue_light"
+            android:text="Upload"
+            android:textColor="@android:color/white" />
+    </RelativeLayout>
+
 </ScrollView>
