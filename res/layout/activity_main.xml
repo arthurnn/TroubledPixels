@@ -4,6 +4,15 @@
     android:layout_height="match_parent"
     android:background="@drawable/tp_background" >
 
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/relativeLayout1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/ic_500px_logo" />
+
     <RelativeLayout
         android:id="@+id/relativeLayout1"
         android:layout_width="fill_parent"
@@ -42,31 +51,34 @@
             android:textColor="@android:color/white" >
         </EditText>
 
-        <FrameLayout
-            android:layout_width="fill_parent"
+        <Button
+            android:id="@+id/login_btn"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/login_password"
             android:layout_below="@+id/login_password"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp" >
-
-            <Button
-                android:id="@+id/login_btn"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Login"
-                android:textColor="@android:color/white" />
-        </FrameLayout>
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="Login"
+            android:textColor="@android:color/white" />
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/relativeLayout1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
-        android:src="@drawable/ic_500px_logo" />
+    <RelativeLayout
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha=".7"
+        android:background="@android:color/background_dark"
+        android:visibility="gone" >
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/imageView1"
+            android:layout_alignRight="@+id/imageView1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp" />
+    </RelativeLayout>
 
 </RelativeLayout>

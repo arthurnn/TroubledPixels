@@ -8,14 +8,15 @@ import roboguice.inject.InjectView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.NavUtils;
 import android.text.Html;
-import android.view.Display;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -88,12 +89,26 @@ public class ProfileActivity extends RoboActivity implements
 			}
 		}
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_profile, menu);
+		return true;
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			NavUtils.navigateUpFromSameTask(this);
+		case R.id.menu_logout:
+			SharedPreferences preferences = getSharedPreferences(Application.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+			Editor editor = preferences.edit();
+			editor.remove(Application.PREF_ACCES_TOKEN);
+			editor.remove(Application.PREF_TOKEN_SECRET);
+			editor.commit();
+			
+			Intent i = new Intent(ProfileActivity.this, MainActivity.class);
+			i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(i);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

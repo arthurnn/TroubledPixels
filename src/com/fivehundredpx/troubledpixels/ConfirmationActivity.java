@@ -4,7 +4,6 @@ import roboguice.activity.RoboActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -44,12 +43,6 @@ public class ConfirmationActivity extends RoboActivity {
 //				
 //			}
 //		});
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_confirmation, menu);
-        return true;
     }
 
     

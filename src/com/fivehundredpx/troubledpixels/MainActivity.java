@@ -14,8 +14,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.fivehundredpx.api.FiveHundredException;
@@ -29,8 +31,13 @@ import com.google.inject.Inject;
 @ContentView(R.layout.activity_main)
 public class MainActivity extends RoboActivity implements
 		XAuth500pxTask.Delegate, UserDetailTask.Delegate {
+
+
 	private static final String TAG = "MainActivity";
 
+	@InjectView(R.id.loadingView) RelativeLayout loadingView;
+	@InjectView(R.id.relativeLayout1) RelativeLayout relativeLayout1;
+	
 	@InjectView(R.id.login_password) EditText passText;
 	@InjectView(R.id.login_email) EditText loginText;
 	@InjectView(R.id.login_btn) Button loginBtn;
@@ -41,20 +48,23 @@ public class MainActivity extends RoboActivity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		SharedPreferences preferences = getSharedPreferences("TroubledSharedPreferences", Context.MODE_PRIVATE);
+		SharedPreferences preferences = getSharedPreferences(Application.SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
-		final String accesToken = preferences.getString("Troubled.accesToken", null);
+		final String accesToken = preferences.getString(Application.PREF_ACCES_TOKEN, null);
 		final String tokenSecret = preferences
-				.getString("Troubled.tokenSecret", null);
+				.getString(Application.PREF_TOKEN_SECRET, null);
 
 		if (null != accesToken && null != tokenSecret) {
 			onSuccess(new AccessToken(accesToken, tokenSecret));
 		}
 
+		
+		
 		loginBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+				showSpinner();
 				final XAuth500pxTask loginTask = new XAuth500pxTask(
 						MainActivity.this);
 				loginTask.execute(getString(R.string.px_consumer_key),
@@ -67,13 +77,15 @@ public class MainActivity extends RoboActivity implements
 
 	@Override
 	public void onSuccess(AccessToken result) {
-		Log.w(TAG, "success");
+		Log.d(TAG, "success");
+		showSpinner();
+		
 		user.accessToken = result;
 		
-		SharedPreferences preferences = getSharedPreferences("TroubledSharedPreferences", Context.MODE_PRIVATE);
+		SharedPreferences preferences = getSharedPreferences(Application.SHARED_PREFERENCES, Context.MODE_PRIVATE);
 		Editor editor = preferences.edit();
-		editor.putString("Troubled.accesToken", result.getToken());
-		editor.putString("Troubled.tokenSecret", result.getTokenSecret());
+		editor.putString(Application.PREF_ACCES_TOKEN, result.getToken());
+		editor.putString(Application.PREF_TOKEN_SECRET, result.getTokenSecret());
 		editor.commit();
 		
 		
@@ -83,6 +95,18 @@ public class MainActivity extends RoboActivity implements
 
 		new UserDetailTask(this).execute(api);
 
+	}
+	
+	private void showSpinner(){
+		loginBtn.setEnabled(false);
+		loadingView.setVisibility(View.VISIBLE);
+		relativeLayout1.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+	}
+	
+	private void hideSpinner(){
+		loginBtn.setEnabled(true);
+		loadingView.setVisibility(View.GONE);
+		relativeLayout1.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 	}
 
 	@Override
@@ -101,8 +125,16 @@ public class MainActivity extends RoboActivity implements
 
 	@Override
 	public void onFail() {
-		Toast.makeText(this, "Login Failed, please try again.",
-				Toast.LENGTH_LONG).show();
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				hideSpinner();
+				Toast.makeText(MainActivity.this,
+						"Login Failed, please try again.", Toast.LENGTH_LONG)
+						.show();
+			}
+		});
+
 	}
 
 	@Override
