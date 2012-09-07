@@ -14,38 +14,34 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ProfileActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar"
             android:configChanges="orientation|keyboardHidden"
-            android:label="@string/title_activity_profile"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.NoActionBar" >
         </activity>
         <activity
             android:name=".PhotoActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="@string/title_activity_photo"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
             android:name=".ConfirmationActivity"
-            android:label="@string/title_activity_confirmation" >
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" >
         </activity>
-        
-        <service android:name=".services.UploadService">
+
+        <service android:name=".services.UploadService" >
         </service>
-            
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
